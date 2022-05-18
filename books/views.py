@@ -15,9 +15,9 @@ of services and selectors layers.
 """
 
 
-class AuthorCreateApi(APIView):
+class AuthorListCreateApi(APIView):
     """
-    Create a Author model object.
+    List all authors or create a new one.
 
     *only admin users are able to acess this view.
     """
@@ -26,23 +26,6 @@ class AuthorCreateApi(APIView):
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
 
-    def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        create_author(**serializer.validated_data)
-
-        return Response(status=status.HTTP_201_CREATED)
-
-
-class AuthorListApi(APIView):
-    """
-    View to list all authors.
-
-    *only admin users are able to acess this view.
-    """
-    permission_classes = [permissions.IsAdminUser]
-
     class OutputSerializer(serializers.ModelSerializer):
         books_count = serializers.IntegerField(read_only=True)
 
@@ -50,13 +33,153 @@ class AuthorListApi(APIView):
             model = Author
             fields = ('name', 'books_count')
 
+    def post(self, request):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        create_author(**serializer.validated_data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def get(self, request):
-        """
-        Return all authors and count all books that author own.
-        """
-        books = get_authors_books_count() #Author.objects.annotate(books_count=Count('books'))
+        books = get_authors_books_count()
 
         serializer = self.OutputSerializer(books, many=True)
+        
+        return Response(serializer.data)
+
+
+# class AuthorCreateApi(APIView):
+#     """
+#     Create a Author model object.
+
+#     *only admin users are able to acess this view.
+#     """
+#     permission_classes = [permissions.IsAdminUser]
+
+#     class InputSerializer(serializers.Serializer):
+#         name = serializers.CharField()
+
+#     def post(self, request):
+#         serializer = self.InputSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         create_author(**serializer.validated_data)
+
+#         return Response(status=status.HTTP_201_CREATED)
+
+
+# class AuthorListApi(APIView):
+#     """
+#     View to list all authors.
+
+#     *only admin users are able to acess this view.
+#     """
+#     permission_classes = [permissions.IsAdminUser]
+
+#     class OutputSerializer(serializers.ModelSerializer):
+#         books_count = serializers.IntegerField(read_only=True)
+
+#         class Meta:
+#             model = Author
+#             fields = ('name', 'books_count')
+
+#     def get(self, request):
+#         """
+#         Return all authors and count all books that author own.
+#         """
+#         books = get_authors_books_count() #Author.objects.annotate(books_count=Count('books'))
+
+#         serializer = self.OutputSerializer(books, many=True)
+
+#         return Response(serializer.data)
+
+
+class BookListCreateApi(APIView):
+    """
+    List all books all create a new one.
+
+    *only admin users are able to acess this view.
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    class InputSerializer(serializers.Serializer):
+        name = serializers.CharField()
+        category = serializers.CharField()
+        release_date = serializers.DateField()
+        is_read = serializers.BooleanField(default=False)
+        author = serializers.CharField()
+
+    class OutputSerializer(serializers.ModelSerializer):
+        author = serializers.StringRelatedField()
+
+        class Meta:
+            model = Book
+            fields = (
+                'pk', 
+                'name', 
+                'category', 
+                'release_date', 
+                'is_read', 
+                'author'
+            )
+
+    def post(self, request):
+        """
+        Create a Book model object.
+        """
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        create_book(**serializer.validated_data) # serializer.save() / validated_data -> OrderedDict
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request):
+        """
+        Return a list of all books.
+        """
+        books = get_books() # services.py -> Books.objects.all()
+
+        serializer = self.OutputSerializer(books, many=True)
+
+        return Response(serializer.data)
+
+
+class BookRetrieveUpdateDeleteApi(APIView):
+    """
+    
+    """
+    permission_classes = [permissions.IsAdminUser]
+
+    class InputSerializer(serializers.Serializer):
+        name = serializers.CharField()
+        category = serializers.CharField()
+        release_date = serializers.DateField()
+        is_read = serializers.BooleanField(default=False)
+        author = serializers.CharField()
+
+    class OutputSerializer(serializers.ModelSerializer):
+        author = serializers.StringRelatedField()
+
+        class Meta:
+            model = Book
+            fields = (
+                'pk', 
+                'name', 
+                'category', 
+                'release_date', 
+                'is_read', 
+                'author'
+            )
+
+    def get(self, request, pk):
+        """
+        Return a Book model object detail.
+        """
+        book = get_book(id=pk) # services.py -> Books.objects.get(pk=pk)
+
+        serializer = self.OutputSerializer(book)
 
         return Response(serializer.data)
 
