@@ -1,13 +1,12 @@
 from django.db.models import Count
-from rest_framework import permissions, serializers, status, generics
-from rest_framework.reverse import reverse
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
-from books.models import Book, Author
-from books.selectors import get_book, get_books, get_authors_books_count
-from books.services import create_book, create_author, delete_book, update_book
-
+from books.models import Author, Book
+from books.selectors import get_authors_books_count, get_book, get_books
+from books.services import create_author, create_book, delete_book, update_book
 
 """
 CRUD operations with implementation
@@ -15,7 +14,7 @@ of services and selectors layers.
 """
 
 
-class AuthorListApi(APIView):
+class AuthorListApiView(APIView):
     """
     List all authors or create a new one.
 
@@ -49,7 +48,7 @@ class AuthorListApi(APIView):
         return Response(serializer.data)
 
 
-class BookListApi(APIView):
+class BookListApiView(APIView):
     """
     List all books all create a new one.
 
@@ -100,7 +99,7 @@ class BookListApi(APIView):
         return Response(serializer.data)
 
 
-class BookDetailApi(APIView):
+class BookDetailApiView(APIView):
     """
     Retrieve, update or delete book.
 
