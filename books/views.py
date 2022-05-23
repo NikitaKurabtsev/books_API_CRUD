@@ -1,3 +1,7 @@
+"""
+CRUD operations with implementation of services and selectors layers.
+"""
+
 from django.db.models import Count
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
@@ -8,19 +12,14 @@ from books.models import Author, Book
 from books.selectors import get_authors_books_count, get_book, get_books
 from books.services import create_author, create_book, delete_book, update_book
 
-"""
-CRUD operations with implementation
-of services and selectors layers.
-"""
-
 
 class AuthorListApiView(APIView):
     """
     List all authors or create a new one.
 
-    *only admin users are able to acess this view.
+    *only authenticate users are able to acess this view.
     """
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
@@ -32,7 +31,20 @@ class AuthorListApiView(APIView):
             model = Author
             fields = ('name', 'books_count')
 
+    def get(self, request):
+        """
+        Return a list of all authors.
+        """
+        books = get_authors_books_count()
+
+        serializer = self.OutputSerializer(books, many=True)
+        
+        return Response(serializer.data)        
+
     def post(self, request):
+        """
+        Create a Author model object.
+        """
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -40,21 +52,14 @@ class AuthorListApiView(APIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def get(self, request):
-        books = get_authors_books_count()
-
-        serializer = self.OutputSerializer(books, many=True)
-        
-        return Response(serializer.data)
-
 
 class BookListApiView(APIView):
     """
     List all books all create a new one.
 
-    *only admin users are able to acess this view.
+    *only authenticate users are able to acess this view.
     """
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
@@ -77,17 +82,6 @@ class BookListApiView(APIView):
                 'author'
             )
 
-    def post(self, request):
-        """
-        Create a Book model object.
-        """
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        create_book(**serializer.validated_data) # serializer.save() / validated_data -> OrderedDict
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
     def get(self, request):
         """
         Return a list of all books.
@@ -98,14 +92,25 @@ class BookListApiView(APIView):
 
         return Response(serializer.data)
 
+    def post(self, request):
+        """
+        Create a Book model object.
+        """
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        create_book(**serializer.validated_data) # serializer.save() / validated_data -> OrderedDict
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class BookDetailApiView(APIView):
     """
     Retrieve, update or delete book.
 
-    *only admin users are able to acess this view.
+    *only authenticate users are able to acess this view.
     """
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
@@ -174,9 +179,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     Create a Author model object.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class InputSerializer(serializers.Serializer):
 #         name = serializers.CharField()
@@ -194,9 +199,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to list all authors.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class OutputSerializer(serializers.ModelSerializer):
 #         books_count = serializers.IntegerField(read_only=True)
@@ -220,9 +225,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to create books.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class InputSerializer(serializers.Serializer):
 #         name = serializers.CharField()
@@ -247,9 +252,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to update books.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class InputSerializer(serializers.Serializer):
 #         name = serializers.CharField()
@@ -271,9 +276,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to list all books.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class OutputSerializer(serializers.ModelSerializer):
 #         author = serializers.StringRelatedField()
@@ -304,9 +309,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to detail book.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     class OutputSerializer(serializers.ModelSerializer):
 #         class Meta:
@@ -335,9 +340,9 @@ class ApiRoot(generics.GenericAPIView):
 #     """
 #     View to delete book.
 
-#     *only admin users are able to acess this view.
+#     *only authenticate users are able to acess this view.
 #     """
-#     permission_classes = [permissions.IsAdminUser]
+#     permission_classes = [permissions.IsAuthenticated]
 
 #     def delete(self, request, pk):
 #         """
