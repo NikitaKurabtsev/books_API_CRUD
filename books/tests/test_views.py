@@ -1,9 +1,11 @@
+
 from unittest import mock
 
 from django.urls import reverse
 from faker import Faker
 from test_plus.test import TestCase as PlusTestCase
 from books.models import Author, Book
+from books.services import create_author
 
 from books.views import AuthorListApiView
 
@@ -26,13 +28,14 @@ class AuthorListApiViewTest(PlusTestCase):
         self.client.post(self.url, data=self.data)
         self.response_201
 
-    @mock.patch('books.services.create_author')
+    @mock.patch('books.views.create_author', wraps=create_author)
     def test_view_calls_service(self, service_mock):
         with self.login(self.user):
             response = self.client.post(self.url, data=self.data)
             print(response.status_code)
-        service_mock.assert_called_once_with(self.data)
         # self.assertTrue(Author.objects.filter(**self.data).exists())
+        service_mock.assert_called_once_with(name=self.data['name'])
+        
 
 
 class BooksListApiViewTest(PlusTestCase):
