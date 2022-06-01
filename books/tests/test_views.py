@@ -5,7 +5,7 @@ from faker import Faker
 from test_plus.test import TestCase as PlusTestCase
 
 from books.models import Author, Book
-from books.services import create_author, create_book
+from books.services import create_author, create_book, update_book
 
 faker = Faker()
 
@@ -44,7 +44,7 @@ class BooksListApiViewTest(PlusTestCase):
         self.data = {
             'name': faker.pystr(max_chars=20),
             'category': 'Drama',
-            'release_date': faker.date,
+            'release_date': '2001-01-01',
             'author': self.author,
             'is_read': True
         }
@@ -63,13 +63,15 @@ class BooksListApiViewTest(PlusTestCase):
     # @mock.patch('books.views.create_book', wraps=create_book)
     # def test_view_calls_service(self, service_mock):
     #     with self.login(self.user):
-    #         self.client.post(self.url, data=self.data)
+    #         response = self.client.post(self.url, data=self.data)
+    #         # print(response.data)
     #     service_mock.assert_called_once_with(**self.data)
 
 
 class BooksDetailApiViewTest(PlusTestCase):
     def setUp(self):
         self.url = reverse('books-detail', args=['1'])
+        self.user = self.make_user('user')
         self.author = Author.objects.create(
             name=faker.pystr(max_chars=20)
         )
@@ -99,3 +101,10 @@ class BooksDetailApiViewTest(PlusTestCase):
     def test_api_view_can_delete(self):
         self.client.delete(self.url)
         self.response_204
+
+    # @mock.patch('books.views.update_book', wraps=update_book)
+    # def test_view_calls_update_service(self, service_mock):
+    #     with self.login(self.user):
+    #         response = self.client.put(self.url, data=self.updated_data)
+    #         print(response.data)
+    #     service_mock.assert_called_once_with(**self.updated_data)
