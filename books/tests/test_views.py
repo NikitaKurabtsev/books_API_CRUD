@@ -1,13 +1,11 @@
-
 from unittest import mock
 
 from django.urls import reverse
 from faker import Faker
 from test_plus.test import TestCase as PlusTestCase
-from books.models import Author, Book
-from books.services import create_author
 
-from books.views import AuthorListApiView
+from books.models import Author, Book
+from books.services import create_author, create_book
 
 faker = Faker()
 
@@ -31,11 +29,9 @@ class AuthorListApiViewTest(PlusTestCase):
     @mock.patch('books.views.create_author', wraps=create_author)
     def test_view_calls_service(self, service_mock):
         with self.login(self.user):
-            response = self.client.post(self.url, data=self.data)
-            print(response.status_code)
+            self.client.post(self.url, data=self.data)
         # self.assertTrue(Author.objects.filter(**self.data).exists())
-        service_mock.assert_called_once_with(name=self.data['name'])
-        
+        service_mock.assert_called_once_with(**self.data)
 
 
 class BooksListApiViewTest(PlusTestCase):
@@ -44,11 +40,12 @@ class BooksListApiViewTest(PlusTestCase):
         self.author = Author.objects.create(
             name=faker.pystr(max_chars=20)
         )
+        self.user = self.make_user('user')
         self.data = {
             'name': faker.pystr(max_chars=20),
             'category': 'Drama',
-            'author': self.author,
             'release_date': faker.date,
+            'author': self.author,
             'is_read': True
         }
 
@@ -59,6 +56,15 @@ class BooksListApiViewTest(PlusTestCase):
     def test_api_view_can_create(self):
         self.client.post(self.url, data=self.data)
         self.response_201
+
+    """
+    Expected author object but given str.
+    """
+    # @mock.patch('books.views.create_book', wraps=create_book)
+    # def test_view_calls_service(self, service_mock):
+    #     with self.login(self.user):
+    #         self.client.post(self.url, data=self.data)
+    #     service_mock.assert_called_once_with(**self.data)
 
 
 class BooksDetailApiViewTest(PlusTestCase):
