@@ -9,6 +9,9 @@ djangorestframework = "*"
 httpie = "*"
 isort = "*"
 python-dotenv = "*"
+faker = "*"
+django-test-plus = "*"
+coverage = "*"
 
 [dev-packages]
 

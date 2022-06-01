@@ -1,7 +1,8 @@
 from datetime import date
+
 from django.shortcuts import get_object_or_404
 
-from books.models import Book, Author
+from books.models import Author, Book
 from books.selectors import get_book, get_book_author
 
 
