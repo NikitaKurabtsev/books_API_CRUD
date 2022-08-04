@@ -1,7 +1,3 @@
-"""
-CRUD operations with implementation of services and selectors layers.
-"""
-
 from django.db.models import Count
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
@@ -36,7 +32,6 @@ class AuthorListApiView(APIView):
         Return a list of all authors.
         """
         books = get_authors_books_count()
-
         serializer = self.OutputSerializer(books, many=True)
         
         return Response(serializer.data)        
@@ -87,7 +82,6 @@ class BookListApiView(APIView):
         Return a list of all books.
         """
         books = get_books() # services.py -> Books.objects.all()
-
         serializer = self.OutputSerializer(books, many=True)
 
         return Response(serializer.data)
@@ -138,7 +132,6 @@ class BookDetailApiView(APIView):
         Return a Book model object detail.
         """
         book = get_book(id=pk) # services.py -> Books.objects.get(pk=pk)
-
         serializer = self.OutputSerializer(book)
 
         return Response(serializer.data)
