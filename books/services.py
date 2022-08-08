@@ -26,7 +26,7 @@ def create_book(
     author: str
 ) -> Book:
     """
-    Create a Book model with own logic.
+    Create a Book model object with own logic.
     """
     book_author = get_book_author(author=author)
 
@@ -53,7 +53,7 @@ def update_book(
     author: str
 ) -> Book:
     """
-    Update a Book model with own logic.
+    Update a Book model object with own logic.
     """
     book = get_book(id=id)
     book_author = get_book_author(author=author)
