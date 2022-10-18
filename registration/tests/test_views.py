@@ -1,12 +1,7 @@
-import imp
 from django.contrib.auth.models import User
 from django.urls import reverse
-from rest_framework import status 
+from rest_framework import status
 from rest_framework.test import APITestCase
-from faker import Faker
-
-
-fake = Faker()
 
 
 class UserRegisterAPIViewTest(APITestCase):
@@ -31,7 +26,7 @@ class UserRegisterAPIViewTest(APITestCase):
             'last_name': 'test_last_name2',
         }
         response = self.client.post(self.url, data, format='json')
-        
+
         self.assertEqual(User.objects.count(), 2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data.get('username', ''), data.get('username', ''))

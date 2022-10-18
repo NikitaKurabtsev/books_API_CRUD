@@ -9,7 +9,7 @@ def get_books() -> QuerySet[Book]:
     """
     Return all objects of Book model.
     """
-    books = Book.objects.all()
+    books = Book.objects.select_related('author').all()
     
     return books
 
@@ -27,7 +27,9 @@ def get_authors_books_count() -> QuerySet[Author]:
     """
     Return all authors with annotate books count field.
     """
-    return Author.objects.annotate(books_count=Count('books'))
+    authors = Author.objects.annotate(books_count=Count('books'))
+    
+    return authors
 
 
 def get_book_author(author) -> Author:
