@@ -32,7 +32,7 @@ def get_authors_books_count() -> QuerySet[Author]:
     return authors
 
 
-def get_book_author(author) -> Author:
+def get_book_author(author: str) -> Author:
     """
     Return Author model object.
     """
