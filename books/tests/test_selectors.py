@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from books.models import Author, Book
-from books.selectors import get_book, get_book_author, get_authors_books_count
+from books.selectors import get_authors_books_count, get_book, get_book_author
 
 
 class SelectorTest(TestCase):

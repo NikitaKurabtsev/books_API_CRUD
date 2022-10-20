@@ -1,21 +1,26 @@
 from django.db.models import Count
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView
 
 from books.models import Author, Book
 from books.selectors import get_authors_books_count, get_book, get_books
 from books.services import create_author, create_book, delete_book, update_book
 
 
-class AuthorListApiView(APIView):
+class AuthorListCreateApiView(ListCreateAPIView):
     """
     List all authors or create a new one.
 
     *only authenticate users are able to acess this view.
     """
     permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
@@ -27,6 +32,7 @@ class AuthorListApiView(APIView):
             model = Author
             fields = ('name', 'books_count')
 
+    @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
         Return a list of all authors.
@@ -48,13 +54,14 @@ class AuthorListApiView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class BookListApiView(APIView):
+class BookListCreateApiView(ListCreateAPIView):
     """
     List all books all create a new one.
 
     *only authenticate users are able to acess this view.
     """
     permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
@@ -77,6 +84,7 @@ class BookListApiView(APIView):
                 'author'
             )
 
+    @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
         Return a list of all books.
@@ -105,6 +113,7 @@ class BookDetailApiView(APIView):
     *only authenticate users are able to acess this view.
     """
     permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
