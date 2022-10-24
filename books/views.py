@@ -6,14 +6,13 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
-from rest_framework.generics import ListCreateAPIView
 
 from books.models import Author, Book
 from books.selectors import get_authors_books_count, get_book, get_books
 from books.services import create_author, create_book, delete_book, update_book
 
 
-class AuthorListCreateApiView(ListCreateAPIView):
+class AuthorListCreateApiView(APIView):
     """
     List all authors or create a new one.
 
@@ -54,7 +53,7 @@ class AuthorListCreateApiView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class BookListCreateApiView(ListCreateAPIView):
+class BookListCreateApiView(APIView):
     """
     List all books or create a new one.
 
