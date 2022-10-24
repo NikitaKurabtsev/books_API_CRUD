@@ -1,6 +1,6 @@
-CRUD operations with implementation of services and selectors layers.
-
 ## API CRUD operations with implementation of services and selectors layers.
+
+## DjangoDRF + Docker + Postgresql
 
 ### Collections/Resources
 
