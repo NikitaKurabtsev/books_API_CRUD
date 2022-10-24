@@ -6,25 +6,25 @@
 
 * Author
 
-| Verb   | URL         | Descripton                                        | Scope              |
-|--------|-------------|---------------------------------------------------|--------------------|
-| GET    | /authors/    | Get the collection of T-shirts by ascending order | T-shirt Collection |
-| GET    | /authors/id/ | Get a single T-shirt by id                        | T-shirt            |
-| PUT    | /tshirt/id/ | Update a single T-shirt by id                     | T-shirt            |
-| PATCH  | /tshirt/id/ | Update one or more fields of an existing T-shirt  | T-shirt            |
-| DELETE | /tshirt/id/ | Delete a single T-shirt by id                     | T-shirt            |
-| POST   | /tshirt/id/ | Create a new T-shirt in the collection            | T-shirt Collection |
+| Verb   | URL         | Descripton                                        | Scope             |
+|--------|-------------|---------------------------------------------------|-------------------|
+| GET    | /authors/    | Get the collection of authors                    | Author Collection |
+| GET    | /authors/id/ | Get a single author by id                        | Author            |
+| PUT    | /authors/id/ | Update a single author by id                     | Author            |
+| PATCH  | /authors/id/ | Update one or more fields of an existing author  | Author            |
+| DELETE | /authors/id/ | Delete a single author by id                     | Author            |
+| POST   | /authors/id/ | Create a new author in the collection            | Author Collection |
 
 * Books
 
-| Verb   | URL         | Descripton                                        | Scope              |
-|--------|-------------|---------------------------------------------------|--------------------|
-| GET    | /brand/    | Get the collection of Brands by ascending order | Brand Collection      |
-| GET    | /brand/id/ | Get a single Brand by id                        | Brand                 |
-| PUT    | /brand/id/ | Update a single Brand by id                     | Brand                 |
-| PATCH  | /brand/id/ | Update one or more fields of an existing Brand  | Brand                 |
-| DELETE | /brand/id/ | Delete a single Brand by id                     | Brand                 |
-| POST   | /brand/id/ | Create a new Brand in the collection            | Brand Collection      |
+| Verb   | URL         | Descripton                                        | Scope             |
+|--------|-------------|---------------------------------------------------|-------------------|
+| GET    | /books/    | Get the collection of bookss by ascending order    | books Collection  |
+| GET    | /books/id/ | Get a single book by id                            | books             |
+| PUT    | /books/id/ | Update a single book by id                         | books             |
+| PATCH  | /books/id/ | Update one or more fields of an existing book      | books             |
+| DELETE | /books/id/ | Delete a single book by id                         | books             |
+| POST   | /books/id/ | Create a new book in the collection                | books Collection  |
 
 ### Flow of data
 **GET** -> Model -> Serializer -> JSONRenderer -> Response
