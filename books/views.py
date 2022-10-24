@@ -17,9 +17,9 @@ class AuthorListCreateApiView(ListCreateAPIView):
     """
     List all authors or create a new one.
 
-    *only authenticate users are able to acess this view.
+    *only authenticate users are able to create authors.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
@@ -35,7 +35,7 @@ class AuthorListCreateApiView(ListCreateAPIView):
     @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
-        Return a list of all authors.
+        Return a collection authors.
         """
         books = get_authors_books_count()
         serializer = self.OutputSerializer(books, many=True)
@@ -56,11 +56,11 @@ class AuthorListCreateApiView(ListCreateAPIView):
 
 class BookListCreateApiView(ListCreateAPIView):
     """
-    List all books all create a new one.
+    List all books or create a new one.
 
-    *only authenticate users are able to acess this view.
+    *only authenticate users are able to create books.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
@@ -87,7 +87,7 @@ class BookListCreateApiView(ListCreateAPIView):
     @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
-        Return a list of all books.
+        Return a collection of books.
         """
         books = get_books() # services.py -> Books.objects.all()
         serializer = self.OutputSerializer(books, many=True)
@@ -110,9 +110,9 @@ class BookDetailApiView(APIView):
     """
     Retrieve, update or delete book.
 
-    *only authenticate users are able to acess this view.
+    *only authenticate users are able to edit a book.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
 
     class InputSerializer(serializers.Serializer):
