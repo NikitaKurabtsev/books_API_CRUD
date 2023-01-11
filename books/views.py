@@ -8,7 +8,7 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
 
 from books.models import Author, Book
-from books.selectors import get_authors_books_count, get_book, get_books
+from books.selectors import BookSelector, AuthorSelector
 from books.services import create_author, create_book, delete_book, update_book
 
 
@@ -36,7 +36,7 @@ class AuthorListCreateApiView(APIView):
         """
         Return a collection authors.
         """
-        books = get_authors_books_count()
+        books = AuthorSelector.get_authors()
         serializer = self.OutputSerializer(books, many=True)
         
         return Response(serializer.data)        
@@ -75,20 +75,20 @@ class BookListCreateApiView(APIView):
         class Meta:
             model = Book
             fields = (
-                'pk', 
-                'name', 
-                'category', 
-                'release_date', 
-                'is_read', 
+                'pk',
+                'name',
+                'category',
+                'release_date',
+                'is_read',
                 'author'
             )
 
-    @method_decorator(cache_page(60*60*2))
+    # @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
         Return a collection of books.
         """
-        books = get_books() # services.py -> Books.objects.all()
+        books = BookSelector.get_books() # services.py -> Books.objects.all()
         serializer = self.OutputSerializer(books, many=True)
 
         return Response(serializer.data)
@@ -139,7 +139,7 @@ class BookDetailApiView(APIView):
         """
         Return a Book model object detail.
         """
-        book = get_book(id=pk) # services.py -> Books.objects.get(pk=pk)
+        book = BookSelector.get_book(id=pk) # services.py -> Books.objects.get(pk=pk)
         serializer = self.OutputSerializer(book)
 
         return Response(serializer.data)

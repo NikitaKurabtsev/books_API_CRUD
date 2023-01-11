@@ -13,9 +13,7 @@ faker = Faker()
 class AuthorListApiViewTest(PlusTestCase):
     def setUp(self):
         self.url = reverse('authors')
-        self.data = {
-            'name': faker.pystr(max_chars=20)
-        }
+        self.data = {'name': faker.pystr(max_chars=20)}
         self.user = self.make_user('user')
 
     def test_api_view_can_be_accessed(self):

@@ -5,37 +5,41 @@ from django.shortcuts import get_object_or_404
 from books.models import Author, Book
 
 
-def get_books() -> QuerySet[Book]:
-    """
-    Return all objects of Book model.
-    """
-    books = Book.objects.select_related('author').all()
-    
-    return books
+class BookSelector:
+    @staticmethod
+    def get_books() -> QuerySet[Book]:
+        """
+        Return all objects of Book model.
+        """
+        books = Book.objects.select_related('author').all()
+        
+        return books
+
+    @staticmethod
+    def get_book(id: int) -> Book:
+        """
+        Return detail object of Book model.
+        """
+        book = get_object_or_404(Book, pk=id)
+
+        return book
 
 
-def get_book(id: int) -> Book:
-    """
-    Return detail object of Book model.
-    """
-    book = get_object_or_404(Book, pk=id)
+class AuthorSelector:
+    @staticmethod
+    def get_authors() -> QuerySet[Author]:
+        """
+        Return all authors with annotate books count field.
+        """
+        authors = Author.objects.annotate(books_count=Count('books'))
+        
+        return authors
 
-    return book
+    @staticmethod
+    def get_author(author: str) -> Author:
+        """
+        Return Author model object.
+        """
+        book_author = Author.objects.get(name__iexact=author)
 
-
-def get_authors_books_count() -> QuerySet[Author]:
-    """
-    Return all authors with annotate books count field.
-    """
-    authors = Author.objects.annotate(books_count=Count('books'))
-    
-    return authors
-
-
-def get_book_author(author: str) -> Author:
-    """
-    Return Author model object.
-    """
-    author = Author.objects.get(name__iexact=author)
-
-    return author
+        return book_author

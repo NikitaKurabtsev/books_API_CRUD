@@ -3,7 +3,7 @@ from datetime import date
 from django.shortcuts import get_object_or_404
 
 from books.models import Author, Book
-from books.selectors import get_book, get_book_author
+from books.selectors import BookSelector, AuthorSelector
 
 
 def create_author(name: str) -> Author:
@@ -28,7 +28,7 @@ def create_book(
     """
     Create a Book model object with own logic.
     """
-    book_author = get_book_author(author=author)
+    book_author = AuthorSelector.get_author(author=author)
 
     book = Book(
         name=name, 
@@ -55,8 +55,8 @@ def update_book(
     """
     Update a Book model object with own logic.
     """
-    book = get_book(id=id)
-    book_author = get_book_author(author=author)
+    book = BookSelector.get_book(id=id)
+    book_author = AuthorSelector.get_author(author=author)
 
     book.name = name
     book.release_date = release_date
