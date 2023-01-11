@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from books.models import Author, Book
 from books.selectors import BookSelector, AuthorSelector
-from books.services import create_author, create_book, delete_book, update_book
+from books.services import BookService, AuthorService, test_create_author
 
 
 class AuthorListCreateApiView(APIView):
@@ -31,13 +31,13 @@ class AuthorListCreateApiView(APIView):
             model = Author
             fields = ('name', 'books_count')
 
-    @method_decorator(cache_page(60*60*2))
+    # @method_decorator(cache_page(60*60*2))
     def get(self, request):
         """
         Return a collection authors.
         """
-        books = AuthorSelector.get_authors()
-        serializer = self.OutputSerializer(books, many=True)
+        authors = AuthorSelector.get_authors()
+        serializer = self.OutputSerializer(authors, many=True)
         
         return Response(serializer.data)        
 
@@ -48,7 +48,7 @@ class AuthorListCreateApiView(APIView):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        create_author(**serializer.validated_data)
+        AuthorService.create_author(**serializer.validated_data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -100,7 +100,7 @@ class BookListCreateApiView(APIView):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        create_book(**serializer.validated_data) # serializer.save() / validated_data -> OrderedDict
+        BookService.create_book(**serializer.validated_data) # serializer.save() / validated_data -> OrderedDict
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -148,7 +148,7 @@ class BookDetailApiView(APIView):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        update_book(id=pk, **serializer.validated_data)
+        BookService.update_book(id=pk, **serializer.validated_data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -156,7 +156,7 @@ class BookDetailApiView(APIView):
         """
         Delete a Book model object.
         """
-        delete_book(id=pk)
+        BookService.delete_book(id=pk)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

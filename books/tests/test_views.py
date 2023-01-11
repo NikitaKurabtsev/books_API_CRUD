@@ -5,7 +5,7 @@ from faker import Faker
 from test_plus.test import TestCase as PlusTestCase
 
 from books.models import Author, Book
-from books.services import create_author, create_book, update_book
+from books.services import BookService, AuthorService
 
 faker = Faker()
 
@@ -24,7 +24,7 @@ class AuthorListApiViewTest(PlusTestCase):
         self.client.post(self.url, data=self.data)
         self.response_201
 
-    @mock.patch('books.views.create_author', wraps=create_author)
+    @mock.patch('books.views.AuthorService.create_author', wraps=AuthorService.create_author)
     def test_view_calls_service(self, service_mock):
         with self.login(self.user):
             self.client.post(self.url, data=self.data)
@@ -35,9 +35,7 @@ class AuthorListApiViewTest(PlusTestCase):
 class BooksListApiViewTest(PlusTestCase):
     def setUp(self):
         self.url = reverse('books')
-        self.author = Author.objects.create(
-            name=faker.pystr(max_chars=20)
-        )
+        self.author = Author.objects.create(name=faker.pystr(max_chars=20))
         self.user = self.make_user('user')
         self.data = {
             'name': faker.pystr(max_chars=20),
