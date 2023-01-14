@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from books.models import Author, Book
-from books.selectors import BookSelector, AuthorSelector
+from books.selectors import AuthorSelector, BookSelector
 
 
 class SelectorTest(TestCase):
@@ -22,7 +22,7 @@ class SelectorTest(TestCase):
                          Author.objects.first())
 
     def test_get_book(self):
-        self.assertEqual(BookSelector.get_book(id=3), self.book)
+        self.assertEqual(BookSelector.get_book(id=1), self.book)
 
     def test_get_authors_books_count(self):
         authors = AuthorSelector.get_authors()

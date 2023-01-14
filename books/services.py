@@ -3,7 +3,7 @@ from datetime import date
 from django.shortcuts import get_object_or_404
 
 from books.models import Author, Book
-from books.selectors import BookSelector, AuthorSelector
+from books.selectors import AuthorSelector, BookSelector
 
 
 class AuthorService:
@@ -18,7 +18,7 @@ class AuthorService:
 
         return author
 
-    @classmethod
+    @staticmethod
     def delete_author(id: int) -> None:
         author = get_object_or_404(Author, id=id)
         author.delete()
@@ -26,13 +26,8 @@ class AuthorService:
 
 class BookService:
     @staticmethod
-    def create_book(
-        name: str, 
-        release_date: date, 
-        is_read: bool, 
-        category: str, 
-        author: str
-    ) -> Book:
+    def create_book(name: str, release_date: date, is_read: bool, 
+                    category: str, author: str) -> Book:
         """
         Create a Book model object with own logic.
         """
@@ -52,14 +47,8 @@ class BookService:
         return book
 
     @staticmethod
-    def update_book(
-        id: int, 
-        name: str, 
-        release_date: date, 
-        is_read: bool, 
-        category: str, 
-        author: str
-    ) -> Book:
+    def update_book(id: int, name: str, release_date: date, is_read: bool, 
+                    category: str, author: str) -> Book:
         """
         Update a Book model object with own logic.
         """
@@ -84,14 +73,3 @@ class BookService:
         """
         book = get_object_or_404(Book, pk=id)
         book.delete()
-
-
-def test_create_author(name: str) -> Author:
-        """
-        Create a Author model object.
-        """
-        author = Author(name=name)
-        author.full_clean()
-        author.save()
-
-        return author
