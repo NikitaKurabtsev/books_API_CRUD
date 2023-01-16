@@ -72,15 +72,16 @@ class BooksDetailApiViewTest(PlusTestCase):
             name=faker.pystr(max_chars=20),
             category='Drama',
             author=self.author,
-            release_date=datetime.date(2001, 1, 2),
+            release_date=datetime.date(2001, 1, 1),
             is_read=True
         )
         self.updated_data = {
+            'id': self.book.pk,
             'name': self.book.name,
-            'category': 'Drama',
+            'category': self.book.category,
             'author': self.author.name,
-            'release_date': datetime.date(2001, 1, 3),
-            'is_read': True
+            'release_date': self.book.release_date,
+            'is_read': False
         }
 
     def test_api_view_can_be_accessed(self):
@@ -99,5 +100,15 @@ class BooksDetailApiViewTest(PlusTestCase):
                 wraps=BookService.update_book)
     def test_view_calls_update_service(self, service_mock):
         with self.login(self.user):
-            self.client.put(self.url, data=self.updated_data)
+            self.client.put(self.url, data=self.updated_data,
+                            content_type='application/json')
+
         service_mock.assert_called_once_with(**self.updated_data)
+
+    @mock.patch('books.views.BookService.delete_book', 
+                wraps=BookService.delete_book)
+    def test_view_calls_delete_service(self, service_mock):
+        with self.login(self.user):
+            self.client.delete(self.url)
+
+        service_mock.assert_called()

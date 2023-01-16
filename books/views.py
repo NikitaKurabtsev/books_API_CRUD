@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from books.models import Author, Book
 from books.selectors import AuthorSelector, BookSelector
@@ -37,7 +38,7 @@ class AuthorListCreateApiView(APIView):
         """
         authors = AuthorSelector.get_authors()
         serializer = self.OutputSerializer(authors, many=True)
-        
+
         return Response(serializer.data)        
 
     def post(self, request):
@@ -50,32 +51,6 @@ class AuthorListCreateApiView(APIView):
         AuthorService.create_author(**serializer.validated_data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# class AuthorListApi(APIView):
-#     """
-#     List all authors or create a new one.
-
-#     *only authenticate users are able to create authors.
-#     """
-#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-#     throttle_classes = [UserRateThrottle, AnonRateThrottle]
-
-#     class OutputSerializer(serializers.ModelSerializer):
-#         books_count = serializers.IntegerField(read_only=True)
-
-#         class Meta:
-#             model = Author
-#             fields = ('name', 'books_count')
-
-#     def get(self, request):
-#         """
-#         Return a collection authors.
-#         """
-#         authors = AuthorSelector.get_authors()
-#         serializer = self.OutputSerializer(authors, many=True)
-        
-#         return Response(serializer.data)
 
 
 class BookListCreateApiView(APIView):
@@ -202,3 +177,44 @@ class ApiRoot(generics.GenericAPIView):
                 }
             }
         )
+
+
+# REFACTOR
+
+
+# class AuthorCreateApi(LoginRequiredMixin, APIView):
+#     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
+#     class InputSerializer(serializers.Serializer):
+#         name = serializers.CharField()
+
+#         class Meta:
+#             model = Author
+#             fields = ('name', 'books_count')   
+
+#     def post(self, request):
+#         serializer = self.InputSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+
+#         AuthorService.create_author(**serializer.validated_data)
+
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# class AuthorListApi(APIView):
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     throttle_classes = [UserRateThrottle, AnonRateThrottle]
+
+#     class OutputSerializer(serializers.ModelSerializer):
+#         books_count = serializers.IntegerField(read_only=True)
+
+#         class Meta:
+#             model = Author
+#             fields = ('name', 'books_count')
+
+#     def get(self, request):
+#         authors = AuthorSelector.get_authors()
+#         serializer = self.OutputSerializer(authors, many=True)
+        
+#         return Response(serializer.data)
