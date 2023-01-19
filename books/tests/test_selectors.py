@@ -4,7 +4,18 @@ from books.models import Author, Book
 from books.selectors import AuthorSelector, BookSelector
 
 
-class SelectorTest(TestCase):
+class AuthorSelectorTest(TestCase):
+    def setUp(self):
+        self.author = Author.objects.create(
+            name='test_author'
+        )
+
+    def test_get_author(self):
+        self.assertEqual(AuthorSelector.get_author(self.author.name),
+                         Author.objects.first())
+
+
+class BookSelectorTest(TestCase):
     def setUp(self):
         self.author = Author.objects.create(
             name='test_author'
@@ -16,11 +27,7 @@ class SelectorTest(TestCase):
             author=self.author,
             is_read=True
         )
-
-    def test_get_author(self):
-        self.assertEqual(AuthorSelector.get_author(self.author.name), 
-                         Author.objects.first())
-
+    
     def test_get_book(self):
         self.assertEqual(BookSelector.get_book(id=1), self.book)
 

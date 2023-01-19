@@ -26,7 +26,7 @@ class AuthorService:
 
 class BookService:
     @staticmethod
-    def create_book(name: str, release_date: date, is_read: bool, 
+    def create_book(name: str, release_date: date, is_read: bool,
                     category: str, author: str) -> Book:
         """
         Create a Book model object with own logic.
@@ -34,10 +34,10 @@ class BookService:
         book_author = AuthorSelector.get_author(author=author)
 
         book = Book(
-            name=name, 
+            name=name,
             release_date=release_date, 
-            is_read=is_read, 
-            category=category, 
+            is_read=is_read,
+            category=category,
             author=book_author
         )
 

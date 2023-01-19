@@ -9,7 +9,7 @@ class BookSelector:
     @staticmethod
     def get_books() -> QuerySet[Book]:
         """
-        Return all objects of Book model.
+        Returns all books.
         """
         books = Book.objects.select_related('author').all()
         
@@ -18,7 +18,7 @@ class BookSelector:
     @staticmethod
     def get_book(id: int) -> Book:
         """
-        Return detail object of Book model.
+        Returns the book.
         """
         book = get_object_or_404(Book, pk=id)
 
@@ -29,7 +29,7 @@ class AuthorSelector:
     @staticmethod
     def get_authors() -> QuerySet[Author]:
         """
-        Return all authors with annotate books count field.
+        Returns all authors with count of their books.
         """
         authors = Author.objects.annotate(books_count=Count('books'))
         
@@ -38,7 +38,7 @@ class AuthorSelector:
     @staticmethod
     def get_author(author: str) -> Author:
         """
-        Return Author model object.
+        Returns the author.
         """
         book_author = Author.objects.get(name__iexact=author)
 

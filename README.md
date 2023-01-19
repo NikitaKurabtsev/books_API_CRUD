@@ -25,8 +25,3 @@
 | PATCH  | /books/id/   | Update one or more fields of an existing book      | Book              |
 | DELETE | /books/id/   | Delete a single book by id                         | Book              |
 | POST   | /books/      | Create a new book in the collection                | books Collection  |
-
-### Flow of data
-**GET** -> Model -> Serializer -> JSONRenderer -> Response
-
-**POST/PUT** -> JSONParser(request) -> Serializer -> Model -> JSONRenderer -> Response
