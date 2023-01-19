@@ -1,13 +1,14 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+
+from .validators import email_unique_validation
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True, 
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[email_unique_validation(User)]
     )
     password = serializers.CharField(
         write_only=True, 
@@ -18,7 +19,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name', )
+        fields = (
+            'username', 'password', 'password2', 'email', 'first_name', 'last_name', 
+        )
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True}

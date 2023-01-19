@@ -1,12 +1,8 @@
-from django.db.models import Count
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from rest_framework import generics, permissions, serializers, status
+from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework import permissions, serializers, status
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from books.models import Author, Book
 from books.selectors import AuthorSelector, BookSelector
@@ -41,7 +37,7 @@ class AuthorListApi(APIView):
 
         class Meta:
             model = Author
-            fields = ('name', 'books_count')
+            fields = ('pk', 'name', 'books_count')
 
     def get(self, request):
         authors = AuthorSelector.get_authors()

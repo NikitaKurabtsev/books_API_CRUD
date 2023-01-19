@@ -1,5 +1,5 @@
-from unittest import mock
 import datetime
+from unittest import mock
 
 from django.urls import reverse
 from faker import Faker
@@ -26,7 +26,7 @@ class AuthorCreateApiTest(PlusTestCase):
         self.data = {'name': faker.pystr(max_chars=20)}
         self.user = self.make_user('user')
 
-    def test_author_create_view(self):
+    def test_author_create_view_response(self):
         self.client.post(self.url, data=self.data)
         self.response_201
 
@@ -42,7 +42,7 @@ class BookListApiTest(PlusTestCase):
     def setUp(self):
         self.url = reverse('books:list')
 
-    def test_book_list_api(self):
+    def test_book_list_view_response(self):
         self.client.get(self.url)
         self.response_200
 
@@ -60,7 +60,7 @@ class BookCreateApiTest(PlusTestCase):
             'is_read': True
         }
 
-    def test_book_create_view(self):
+    def test_book_create_view_response(self):
         self.client.post(self.url, data=self.data)
         self.response_201
 
@@ -74,11 +74,24 @@ class BookCreateApiTest(PlusTestCase):
 
 class BookDetailApiTest(PlusTestCase):
     def setUp(self):
-        self.url = reverse('books:update', args=['1'])
+        self.url = reverse('books:detail', args=['1'])
+        self.author = Author.objects.create(name=faker.pystr(max_chars=20))
+        self.book = Book.objects.create(
+            name=faker.pystr(max_chars=20),
+            category='Drama',
+            author=self.author,
+            release_date=datetime.date(2001, 1, 1),
+            is_read=True
+        )
+
+    def test_book_detail_view_response(self):
+        self.client.get(self.url).data
+        self.response_200
 
     def test_book_detail_view(self):
-        self.client.get(self.url)
-        self.response_200
+        response = self.client.get(self.url).data
+
+        self.assertEqual(self.book.name, response['name'])
 
 
 class BookUpdateApiTest(PlusTestCase):
@@ -102,7 +115,7 @@ class BookUpdateApiTest(PlusTestCase):
             'is_read': False
         }
 
-    def test_book_update_view(self):
+    def test_book_update_view_response(self):
         self.client.post(self.url, data=self.updated_data)
         self.response_200
 
@@ -128,7 +141,7 @@ class BookDeleteApiTest(PlusTestCase):
             is_read=True
         )
 
-    def test_book_delete_view(self):
+    def test_book_delete_view_response(self):
         self.client.delete(self.url)
         self.response_204
 

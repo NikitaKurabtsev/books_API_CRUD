@@ -1,15 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
 
-from books.views import (
-    AuthorCreateApi,
-    AuthorListApi,
-    BookCreateApi,
-    BookListApi,
-    BookDetailApi,
-    BookUpdateApi,
-    BookDeleteApi,
-)
-
+from books.views import (AuthorCreateApi, AuthorListApi, BookCreateApi,
+                         BookDeleteApi, BookDetailApi, BookListApi,
+                         BookUpdateApi)
 
 author_patterns = [
     path('', AuthorListApi.as_view(), name='list'),
