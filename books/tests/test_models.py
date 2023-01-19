@@ -1,5 +1,5 @@
-from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 
 from books.models import Author, Book
 
@@ -12,6 +12,7 @@ class AuthorModelTest(TestCase):
 
     def test_author_model_to_string(self):
         self.assertEqual(str(self.author), 'test_author')
+
 
 class BookModelTest(TestCase):
     def setUp(self):
@@ -36,4 +37,3 @@ class BookModelTest(TestCase):
 
     def test_book_release_date_cannot_be_later_than_today(self):
         self.assertRaises(ValidationError, self.book_for_validate.clean)
-
