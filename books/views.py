@@ -15,10 +15,6 @@ class AuthorCreateApi(LoginRequiredMixin, APIView):
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
 
-        class Meta:
-            model = Author
-            fields = ('name', 'books_count')   
-
     def post(self, request):
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

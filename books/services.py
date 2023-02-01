@@ -10,7 +10,7 @@ class AuthorService:
     @staticmethod
     def create_author(name: str) -> Author:
         """
-        Create a Author model object.
+        Create an Author model object.
         """
         author = Author(name=name)
         author.full_clean()

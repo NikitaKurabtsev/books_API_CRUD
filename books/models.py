@@ -25,8 +25,8 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=10, choices=TYPE_OF_CHOICES, 
                                 blank=False)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE,
-                                       related_name='books')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, 
+                               related_name='books')
     release_date = models.DateField()
     is_read = models.BooleanField(default=False)
 

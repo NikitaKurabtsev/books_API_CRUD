@@ -1,8 +1,6 @@
-from django.shortcuts import get_object_or_404
 from django.test import TestCase
 
 from books.models import Author, Book
-from books.selectors import AuthorSelector, BookSelector
 from books.services import AuthorService, BookService
 
 
